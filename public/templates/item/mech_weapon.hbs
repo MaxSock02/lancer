@@ -1,0 +1,92 @@
+<form class="{{cssClass}} lancer-sheet" autocomplete="off">
+  {{!-- Sheet Header --}}
+  <header class="sheet-header card clipped-bot">
+    <div class="flexcol grow">
+      <h1 class="charname"><input class="header-field" name="name" type="text" value="{{item.name}}" placeholder="{{localize "lancer.placeholder.name"}}"/></h1>
+      <div class="flexrow">
+        {{{item-edit-license}}}
+      </div>
+    </div>
+    {{{ ref-portrait-img item.img "img" mm }}}
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="lancer-tabs" data-group="primary">
+    {{#each mm.Profiles as |profile prof_index|}}
+      <a class="item lancer-tab medium weapon-profile-tab" data-tab="profile{{prof_index}}" data-path="mm.Profiles.{{prof_index}}"> 
+        &lt;{{profile.Name}}&gt;
+      </a>
+    {{/each}}
+
+    {{!-- Fake tab to add new profiles --}}
+    <a class="item lancer-tab medium gen-control" data-action="append" data-action-value="(struct)weapon_profile" data-path="mm.Profiles">+</a>
+  </nav>
+
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+    <div class="wraprow double">
+      {{!-- Size --}}
+      <div class="card clipped">
+        <div class="lancer-header major ">SIZE</div>
+        {{{wpn-size-sel "mm.Size"}}}
+      </div>
+
+      {{!-- Status --}}
+      <div class="card clipped">
+        <div class="lancer-header major ">STATUS</div>
+        <div class="flexrow" style="align-self: center;">
+          {{#if (is-loading mm)}}
+            {{{loading-indicator mm.Loaded "mm"}}}
+          {{/if}}
+          {{#if (is-limited mm)}}
+            {{{limited-uses-indicator mm "mm"}}}
+          {{/if}}
+        </div>
+      </div>
+
+      {{#each mm.Profiles as |profile prof_index|}}
+      <div class="tab profile{{prof_index}} double" data-group="primary" data-tab="profile{{prof_index}}">
+        <div class="wraprow quintuple">
+
+          {{!-- Type --}}
+          <div class="card clipped">
+            <span class="lancer-header submajor ">TYPE</span>
+            {{{wpn-type-sel (concat "mm.Profiles." prof_index ".WepType") }}}
+          </div>
+
+          {{!-- Range --}}
+          {{{item-edit-arrayed-range (concat "mm.Profiles." prof_index ".BaseRange") "RANGE"}}}
+
+          {{!-- Damage --}}
+          {{{item-edit-arrayed-damage (concat "mm.Profiles." prof_index ".BaseDamage") "DAMAGE"}}}
+
+          {{!-- Description --}}
+          {{{textarea-card "DESCRIPTION" (concat "mm.Profiles." prof_index ".Description") }}}
+
+          {{!-- Effect --}}
+          {{{textarea-card "EFFECT" (concat "mm.Profiles." prof_index ".Effect") }}}
+
+          {{!-- On Attack --}}
+          {{{textarea-card "ON ATTACK" (concat "mm.Profiles." prof_index ".OnAttack") }}}
+
+          {{!-- On Hit --}}
+          {{{textarea-card "ON HIT" (concat "mm.Profiles." prof_index ".OnHit") }}}
+
+          {{!-- On Crit --}}
+          {{{textarea-card "ON CRIT" (concat "mm.Profiles." prof_index ".OnCrit") }}}
+
+          {{!-- Actions --}}
+          {{{item-edit-arrayed-actions "mm.Actions" "ADDED ACTIONS"}}}
+
+          {{!-- Tags --}}
+          <div class="card full">
+            <span class="lancer-header submajor">TAGS</span>
+            {{{mm-tag-list (concat "mm.Profiles." prof_index ".Tags") profile.Tags ../editable}}}
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </section>
+</form>
